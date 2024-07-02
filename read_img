@@ -1,0 +1,19 @@
+#image reader
+import cv2
+import matplotlib.pyplot as plt
+img=cv2.imread("person2.jpg")
+new_img=cv2.cvtColor(img,cvt.COLOR_BRG2RGB)
+plt.imshow(new_img)
+plt.axis('off')
+
+#filtering
+import numpy as np
+k1=np.array([[-1,-1,-1],[-1,12,-1],[-1,-1,-1]])
+filtered_img=cv2.filter2D(img,-1,k1)
+plt.imshow(filtered_img)
+
+#blur
+blur_img=cv2.blur(img,(5,5))
+plt.imshow(blur_img)
+
+
