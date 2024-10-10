@@ -1,0 +1,414 @@
+IMAGE FILTERING
+________________
+Reading and Displaying Image
+========================
+import cv2
+import matplotlib.pyplot as plt 
+import numpy as np
+img = cv2.imread("3.jpg")
+new_img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+plt.imshow(new_img)
+plt.axis('off')
+------------------------------------------------
+Box, Gaussian, Median Blur
+======================
+import cv2
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(50, 30))
+
+img= cv2.imread("4.jpg")
+
+img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+
+#box blur
+blurred_img1 = cv2.blur(img,(8, 8))
+#gaussian blur
+blurred_img2 = cv2.GaussianBlur(img,(3,3),0)
+#median blur
+blurred_img3 = cv2.medianBlur(img,5)
+#subplot(row, col,sequence)
+plt.subplot(1,4,1),plt.imshow(img),plt.title("Original Image")
+plt.axis('off')
+plt.subplot(1,4,2),plt.imshow(blurred_img1),plt.title("Box Image")
+plt.axis('off')
+plt.subplot(1,4,3),plt.imshow(blurred_img2),plt.title("Gaussian Image")
+plt.axis('off')
+plt.subplot(1,4,4),plt.imshow(blurred_img3),plt.title("median Image")
+plt.axis('off')
+-----------------------------------------------------------------------
+sharpening filters in image
+======================
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+img= cv2.imread("2.jpg")
+img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+
+plt.figure(figsize=(15, 15))
+
+k1 = np.array ([[-1,-1,-1] , [-1, 9, -1] , [-1,-1,-1]])
+k2 = np.array ([[1,1,1] , [1, -7, 1] , [1,1,1]])
+new_img1 = cv2.filter2D(img , -1 , k1)
+new_img2 = cv2.filter2D(img , -1 , k2)
+plt.subplot(1,3,1),plt.imshow(img)
+plt.axis('off')
+plt.subplot(1,3,2),plt.imshow(new_img1)
+plt.axis('off')
+plt.subplot(1,3,3),plt.imshow(new_img2)
+plt.axis('off')
+---------------------------------------------------------------
+Horizontal Motion Blur And Vertical Motion Blur
+====================================
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Read and convert the image
+img = cv2.imread("5.jpg")
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+k1 = np.zeros((50, 50))
+k1[int(50 / 2), :] = np.ones(50)
+k1 = k1 / 50
+horizontal_blur = cv2.filter2D(img, -1, k1)
+k2 = np.zeros((50, 50))
+k2[:, int(50 / 2)] = np.ones(50)
+k2 = k2 / 50
+vertical_blur = cv2.filter2D(img, -1, k2)
+plt.figure(figsize=(20, 20))
+plt.subplot(1, 3, 1),plt.imshow(img),plt.title("Original Image")
+plt.axis('off')
+plt.subplot(1, 3, 2),plt.imshow(horizontal_blur),plt.title("Horizontal Motion Blur")
+plt.axis('off')
+plt.subplot(1, 3, 3),plt.imshow(vertical_blur),plt.title("Vertical Motion Blur")
+plt.axis('off')
+plt.show()
+-------------------------------------------------------------
+Edge Detection 1) sobel 2)laplacian 3) canny
+====================================
+#edge detection : soble (img,ddepth ,x,y, size)
+
+sobelx= cv2.Sobel(img,cv2.CV_64F , 1,0,5)
+sobely= cv2.Sobel(img,cv2.CV_64F , 0,1,5)
+
+#lapiacian(img,ddepath)
+laplacian_img = cv2.Laplacian(img, cv2.CV_64F)
+#canny
+canny_img = cv2.Canny(img, 50 , 150 )
+
+plt.figure(figsize=(15, 15))
+plt.subplot(1,5,1),plt.imshow(img , cmap="gray")
+plt.axis('off')
+plt.subplot(1,5,2),plt.imshow(sobelx, cmap="gray")
+plt.axis('off')
+plt.subplot(1,5,3),plt.imshow(sobely, cmap="gray")
+plt.axis('off')
+plt.subplot(1,5,4),plt.imshow(laplacian_img, cmap="gray")
+plt.axis('off')
+
+plt.subplot(1,5,5),plt.imshow(canny_img, cmap="gray")
+plt.axis('off')
+_________________________________________________________
+OBJECT DETECTION
+FACE
+=========
+
+import cv2
+img=cv2.imread("3.jpg",cv2.IMREAD_COLOR)
+face_cascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+grey_img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+faces=face_cascade.detectMultiScale(grey_img,1.1,4)
+print(faces)
+for(x,y,w,h) in faces:
+    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),3)
+cv2.imshow("Face Detector",img)
+cv2.waitKey(50000)
+cv2.destroyAllWindows()
+---------------------------------------------------
+EYE
+==============
+import cv2
+img=cv2.imread("3.jpg",cv2.IMREAD_COLOR)
+face_cascade=cv2.CascadeClassifier("haarcascade_eye.xml")
+grey_img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+faces=face_cascade.detectMultiScale(grey_img,1.1,6)
+print(faces)
+for(x,y,w,h) in faces:
+    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),3)
+cv2.imshow("eye Detector",img)
+cv2.waitKey(5000)
+cv2.destroyAllWindows()
+---------------------------------------------------
+NOSE
+==============
+import cv2
+img=cv2.imread("2.jpg",cv2.IMREAD_COLOR)
+face_cascade=cv2.CascadeClassifier("haarcascade_mcs_nose.xml")
+grey_img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+faces=face_cascade.detectMultiScale(grey_img,1.1,3)
+print(faces)
+for(x,y,w,h) in faces:
+    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),3)
+cv2.imshow("nose Detector",img)
+cv2.waitKey(5000)
+cv2.destroyAllWindows()
+
+DATA PREPROSSESING
+_____________________
+Regression
+==========
+import pandas as pd
+import numpy as np
+from sklearn import linear_model
+
+#load the data
+data=pd.read_csv("Salary.csv")
+print(data)
+
+#split the dataset
+x=np.array(data.YearsExperience).reshape(-1,1)
+y=np.array(data.Salary).reshape(-1,1)
+
+#load the model
+linear_rmodel=linear_model.LinearRegression()
+#train the model : fit
+linear_rmodel.fit(x,y)
+
+#test the model
+xtest=np.array([1.1,5.2,10.0]).reshape(-1,1)
+ytest_result=linear_rmodel.predict(xtest)
+print(xtest)
+print(ytest_result)
+-------------------------------------------------------------------------------
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+
+#load the data
+data=pd.read_csv("Salary.csv")
+print(data)
+
+#split the dataset
+x=np.array(data.YearsExperience).reshape(-1,1)
+y=np.array(data.Salary).reshape(-1,1)
+
+#load the model
+linear_rmodel=linear_model.LinearRegression()
+
+#train the model : fit
+linear_rmodel.fit(x,y)
+
+#test the model
+# xtest=np.array([1.1,5.2,10.0]).reshape(-1,1)
+xtest=x
+ytest_result=linear_rmodel.predict(xtest)
+print(xtest)
+print(y)
+print(ytest_result)
+
+#visualize the actual value v/s predicted value
+plt.plot(x,y,color="red", label="Actual value")
+plt.scatter(x,ytest_result,color="blue", label="Pridicted value")
+plt.xlabel("XTEST")
+plt.ylabel("YTEST")
+plt.title("Predicted value of Year of Experience")
+plt.legend()
+plt.show()
+-----------------------------------------------------------------------
+REGRESSION(TRAINING & TESTING)
+import pandas as pd
+import numpy as np
+from sklearn import linear_model,model_selection
+
+#load the data
+data=pd.read_csv("Salary.csv")
+# print(data)
+
+#split the dataset
+x=np.array(data.YearsExperience).reshape(-1,1)
+y=np.array(data.Salary).reshape(-1,1)
+
+#split the dataset in training and testing
+xtrain,xtest,ytrain,ytest=model_selection.train_test_split(x,y,test_size=0.3)
+
+#load the model
+lr=linear_model.LinearRegression()
+
+#train the model : fit
+lr.fit(xtrain,ytrain)
+
+#test the model
+# xtest=np.array([1.1,5.2,10.0]).reshape(-1,1)
+# xtest=x
+ytest_result=lr.predict(xtest)
+print(xtest)
+print(ytest)
+print(ytest_result)
+--------------------------------------------------------------------------------
+Logistic Regression Classifier
+============================
+from sklearn import model_selection
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+#model Evaluation
+
+#load the dataset : cancer
+dataset=load_breast_cancer()
+
+#Identify X and y
+X=np.array(dataset.data[:,0]).reshape(-1,1)
+y=np.array(dataset.target).reshape(-1,1)
+
+#split the dataset into training & testing
+xtrain,xtest,ytrain,ytest=model_selection.train_test_split(X,y,test_size=0.3)
+
+#Load the classifier
+classifier=LogisticRegression()
+
+#Train the model
+classifier.fit(xtrain,ytrain)
+
+#test the classifier
+ytest_predicted=classifier.predict(xtest)
+
+print(xtest)
+print(ytest)
+print(ytest_predicted)
+
+#visualize the results
+plt.scatter(xtest,ytest)
+plt.scatter(xtest,ytest_predicted)
+plt.show()
+
+#Model Evaluation
+from sklearn.metrics import confusion_matrix
+
+print("\nConfusion Metrix:")
+print(confusion_matrix(ytest,ytest_predicted))
+______________________________________________
+CLASSIFICATION
+==================
+from sklearn import model_selection
+import sklearn.datasets as db
+from sklearn.naive_bayes import GaussianNB
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt 
+from sklearn.metrics import accuracy_score,classification_report,confusion_matrix
+
+#Load the dataset
+dataset = db.load_iris()
+
+#Identify X:sepal Length and Y: class
+x = np.array(dataset.data[:, 0]).reshape(-1,1)
+y = np.array(dataset.target).reshape(-1,1)
+
+#Split the dataset into training & testing
+xtrain, xtest, ytrain, ytest = model_selection.train_test_split(x, y, test_size=0.3)
+
+#Load the classifier
+classifier = GaussianNB()
+
+#Train the model
+classifier.fit(xtrain, ytrain)
+
+#test the classifier
+ytest_predicted = classifier.predict(xtest)
+
+print(xtest,ytest)
+print(ytest_predicted)
+
+#Visualize the results
+plt.scatter(xtest,ytest)
+plt.scatter(xtest, ytest_predicted)
+plt.show()
+
+#Evaluation Matrix
+print("Accuracy Score : ",accuracy_score(ytest, ytest_predicted))
+print("classification report : \n",classification_report(ytest, ytest_predicted))
+print("confusion matrix : \n",confusion_matrix(ytest, ytest_predicted))
+____________________________________________________________
+
+CLUSTER
+KMEANS
+=============
+# kmeans algorithm : unsupervised learning(clustering)
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.cluster import KMeans
+
+# step : 1 load the data
+plt.figure()
+data = pd.read_csv("Book1.csv")
+x = data.iloc[:,0]
+y = data.iloc[:,1]
+plt.scatter(x,y)
+# step : 2 load the model
+model=KMeans(init="k-means++",n_clusters=4)
+# step : 3 train the model
+model.fit(data)
+# use the model to diaplay the clusters
+result = model.predict(data)
+print(result)
+# find the centroids (center point)
+centroids = model.cluster_centers_
+print(centroids)
+
+======================================================
+Tokenization,Stremming,Lemmufication
+________________________________
+Tokenization
+============
+import nltk
+nltk.download()
+
+#sentence
+from nltk import sent_tokenize
+text="any paragraph........"
+print(text)
+output=sent_tokenize(text)
+print(output)
+
+#words
+from nltk import word_tokenize
+text="any paragraph........"
+print(text)
+output=word_tokenize(text)
+print(output)
+
+#word Punctuation
+from nltk import WordPunctTokenizer
+text="any paragraph........"
+print(text)
+print("----------------------------------------------------------------------")
+model=WordPunctTokenizer()
+output=word_tokenize(text)
+print(output)
+-----------------------------------------------------------------------
+Stremming
+============
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.snowball import SnowballStemmer
+
+words=['table','probably','wolves','playing','is','the','cats','talk']
+
+porter_stemmer=PorterStemmer()
+lancaster_stemmer=LancasterStemmer()
+snowball_stemmer=SnowballStemmer('english')
+
+for word in words:
+    stemmed_porter_words=[porter_stemmer.stem(word)]
+    stemmed_lancaster_words=[lancaster_stemmer.stem(word)]
+    stemmed_snowball_words=[snowball_stemmer.stem(word)]
+    
+    print("Porter Stemmer : ",word,stemmed_porter_words)
+    print("Lancaster Stemmer : ",word,stemmed_lancaster_words)
+    print("Snowball Stemmer : ",word,stemmed_snowball_words)
+    print("-------------------------------")
